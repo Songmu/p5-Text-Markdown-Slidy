@@ -34,12 +34,12 @@ sub markdown {
         Text::Markdown::Discount->new;
     };
 
+    $self->{callback} ||= \&callback;
+
     my @slides;
     for my $slide (_split_slides($text)) {
-        my $html  = $self->{md}->markdown($slide);
-        my $open  = sprintf qq{<%s class="%s">\n}, $self->slide_element, $self->slide_class;
-        my $close = sprintf "</%s>\n", $self->slide_element;
-        push @slides, "$open$html$close";
+        my $html = $self->{callback}->($self, $slide);
+        push @slides, $html;
     }
     join "\n", @slides;
 }
@@ -50,6 +50,15 @@ sub slide_element {
 
 sub slide_class {
     shift->{slide_class} ||= 'slide';
+}
+
+sub callback {
+    my ($self, $slide_text) = @_;
+
+    my $html  = $self->{md}->markdown($slide_text);
+    my $open  = sprintf qq{<%s class="%s">\n}, $self->slide_element, $self->slide_class;
+    my $close = sprintf "</%s>\n", $self->slide_element;
+    "$open$html$close";
 }
 
 sub _split_slides {
