@@ -35,32 +35,28 @@ sub markdown {
     join "\n", @slides;
 }
 
-sub slide_element {
-    shift->{slide_element} ||= 'div';
-}
-
-sub slide_class {
-    shift->{slide_class} ||= 'slide';
-}
-
-sub callback {
+sub process {
     my ($self, $slide_text) = @_;
 
-    if ($self->{callback}) {
-        $self->{callback}->($slide_text);
+    if (my $callback = $self->{callback}) {
+        $self->$callback($slide_text);
     }
     else {
         my $html  = $self->{md}->markdown($slide_text);
-        my $open  = sprintf qq{<%s class="%s">\n}, $self->slide_element, $self->slide_class;
-        my $close = sprintf "</%s>\n", $self->slide_element;
-        "$open$html$close";
+        sprintf $self->template, $html;
     }
+}
+
+sub template {
+    my $self = shift;
+
+    $self->{template} ||= qq[<div class="slide">\n%s</div>\n];
 }
 
 sub sections {
     my ($self, $text) = @_;
 
-    map {$self->callback($_)} separate_markdown($text);
+    map {$self->process($_)} separate_markdown($text);
 }
 
 sub separate_markdown {
