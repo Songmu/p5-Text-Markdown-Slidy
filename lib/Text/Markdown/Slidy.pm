@@ -5,9 +5,9 @@ use warnings;
 
 our $VERSION = "0.01";
 use parent 'Exporter';
-use Text::Markdown::Discount ();
+use Text::Markdown;
 
-our @EXPORT = qw/markdown/;
+our @EXPORT = qw/markdown separate_markdown/;
 
 sub new {
     my $class = shift;
@@ -29,18 +29,9 @@ sub markdown {
             croak('Calling ' . $self . '->markdown (as a class method) is not supported.');
         }
     }
-    $self->{md} ||= do {
-        Text::Markdown::Discount::with_html5_tags;
-        Text::Markdown::Discount->new;
-    };
+    $self->{md} ||= Text::Markdown->new;
 
-    $self->{callback} ||= \&callback;
-
-    my @slides;
-    for my $slide (_split_slides($text)) {
-        my $html = $self->{callback}->($self, $slide);
-        push @slides, $html;
-    }
+    my @slides = $self->sections($text);
     join "\n", @slides;
 }
 
@@ -55,13 +46,24 @@ sub slide_class {
 sub callback {
     my ($self, $slide_text) = @_;
 
-    my $html  = $self->{md}->markdown($slide_text);
-    my $open  = sprintf qq{<%s class="%s">\n}, $self->slide_element, $self->slide_class;
-    my $close = sprintf "</%s>\n", $self->slide_element;
-    "$open$html$close";
+    if ($self->{callback}) {
+        $self->{callback}->($slide_text);
+    }
+    else {
+        my $html  = $self->{md}->markdown($slide_text);
+        my $open  = sprintf qq{<%s class="%s">\n}, $self->slide_element, $self->slide_class;
+        my $close = sprintf "</%s>\n", $self->slide_element;
+        "$open$html$close";
+    }
 }
 
-sub _split_slides {
+sub sections {
+    my ($self, $text) = @_;
+
+    map {$self->callback($_)} separate_markdown($text);
+}
+
+sub separate_markdown {
     my $text = shift;
     $text =~ s/^\A\s+//ms;
     $text =~ s/\s+\z//ms;

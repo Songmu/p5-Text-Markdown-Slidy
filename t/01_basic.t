@@ -18,7 +18,7 @@ hoge
 
 ...
 
-is_deeply [Text::Markdown::Slidy::_split_slides($text)], ['Title1
+is_deeply [separate_markdown($text)], ['Title1
 ======
 abcde
 fg
