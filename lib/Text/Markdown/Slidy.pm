@@ -126,7 +126,7 @@ Text::Markdown::Slidy - Markdown converter for HTML slide tools
 
 =head1 DESCRIPTION
 
-Text::Markdown::Slidy is to convert markdonw syntax to HTML slide tools.
+Text::Markdown::Slidy is to convert markdown syntax to HTML slide tools.
 
 =head1 METHODS
 
