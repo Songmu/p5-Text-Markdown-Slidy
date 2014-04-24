@@ -5,7 +5,6 @@ use warnings;
 
 our $VERSION = "0.01";
 use parent 'Exporter';
-use Text::Markdown;
 
 our @EXPORT = qw/markdown separate_markdown/;
 
@@ -29,22 +28,8 @@ sub markdown {
             croak('Calling ' . $self . '->markdown (as a class method) is not supported.');
         }
     }
-    $self->{md} ||= Text::Markdown->new;
-
-    my @slides = $self->sections($text);
+    my @slides = $self->_sections($text);
     join "\n", @slides;
-}
-
-sub process {
-    my ($self, $slide_text) = @_;
-
-    if (my $callback = $self->{callback}) {
-        $self->$callback($slide_text);
-    }
-    else {
-        my $html  = $self->{md}->markdown($slide_text);
-        sprintf $self->template, $html;
-    }
 }
 
 sub template {
@@ -53,10 +38,26 @@ sub template {
     $self->{template} ||= qq[<div class="slide">\n%s</div>\n];
 }
 
-sub sections {
+sub md {
+    my $self = shift;
+
+    $self->{md} ||= do {
+        require Text::Markdown;
+        Text::Markdown->new;
+    };
+}
+
+sub _process {
+    my ($self, $slide_text) = @_;
+
+    my $html  = $self->md->markdown($slide_text);
+    sprintf $self->template, $html;
+}
+
+sub _sections {
     my ($self, $text) = @_;
 
-    map {$self->process($_)} separate_markdown($text);
+    map {$self->_process($_)} separate_markdown($text);
 }
 
 sub separate_markdown {
