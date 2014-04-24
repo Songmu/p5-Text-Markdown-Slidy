@@ -95,7 +95,7 @@ Text::Markdown::Slidy - Markdown converter for HTML slide tools
 
     use Text::Markdown::Slidy;
 
-    markdown(<'MARKDOWN');
+    markdown(<<'MARKDOWN');
     Title1
     ======
 
