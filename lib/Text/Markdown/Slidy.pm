@@ -6,7 +6,7 @@ use warnings;
 our $VERSION = "0.01";
 use parent 'Exporter';
 
-our @EXPORT = qw/markdown separate_markdown/;
+our @EXPORT = qw/markdown split_markdown/;
 
 sub new {
     my $class = shift;
@@ -57,10 +57,10 @@ sub _process {
 sub _sections {
     my ($self, $text) = @_;
 
-    map {$self->_process($_)} separate_markdown($text);
+    map {$self->_process($_)} split_markdown($text);
 }
 
-sub separate_markdown {
+sub split_markdown {
     my $text = shift;
     $text =~ s/^\A\s+//ms;
     $text =~ s/\s+\z//ms;
@@ -89,15 +89,58 @@ __END__
 
 =head1 NAME
 
-Text::Markdown::Slidy - It's new $module
+Text::Markdown::Slidy - Markdown converter for HTML slide tools
 
 =head1 SYNOPSIS
 
     use Text::Markdown::Slidy;
 
+    markdown(<'MARKDOWN');
+    Title1
+    ======
+
+    ## sub title
+    abcde
+    fg
+
+    Title2
+    ------
+    hoge
+    MARKDOWN
+    # <div class="slide">
+    # <h1>Title1</h1>
+    # <h2>sub title<h2>
+    #
+    # <p>abcde
+    # fg</p>
+    # </div>
+    #
+    # <div class="slide">
+    # <h2>Title2</h2>
+    #
+    # <p>hoge</p>
+    # </div>
+
+    # split markdown text to slide sections
+    my @markdowns_per_section = split_markdown($markdown_text);
+
 =head1 DESCRIPTION
 
-Text::Markdown::Slidy is ...
+Text::Markdown::Slidy is to convert markdonw syntax to HTML slide tools.
+
+=head1 METHODS
+
+=head2 C<< $md = Text::Markdown::Slidy->new(%opt) >>
+
+Constructor.
+
+=head2 C<< $html_text = $md->markdown($markdown_text) >>
+
+=head1 FUNCTIONS
+
+=head2 C<< $html_text = markdown($markdown_text) >>
+
+=head2 C<< @markdowns_per_section = split_markdown($markdown_text) >>
 
 =head1 LICENSE
 

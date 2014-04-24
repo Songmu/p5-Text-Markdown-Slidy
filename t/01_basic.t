@@ -18,7 +18,7 @@ hoge
 
 ...
 
-is_deeply [separate_markdown($text)], ['Title1
+is_deeply [split_markdown($text)], ['Title1
 ======
 abcde
 fg
