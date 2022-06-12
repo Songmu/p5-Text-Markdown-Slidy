@@ -1,4 +1,5 @@
 requires 'Text::Markdown';
+requires 'YAML::Tiny';
 requires 'parent';
 requires 'perl', '5.008001';
 
