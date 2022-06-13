@@ -23,7 +23,7 @@ jobs:
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          cpanm -n Devel::Cover::Report::Coveralls Module::Build::Tiny
           cpanm --quiet --installdeps --notest --with-recommends .
-          cpanm -n Devel::Cover::Report::Coveralls
           perl Build.PL && ./Build build && ./Build test
           RIJI_TEST_INTERNAL=1 cover -test -report coveralls
