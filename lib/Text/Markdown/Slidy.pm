@@ -3,7 +3,7 @@ use 5.008001;
 use strict;
 use warnings;
 
-use YAML::Tiny ();
+use YAML::PP ();
 
 our $VERSION = "0.02";
 use parent 'Exporter';
@@ -59,7 +59,7 @@ sub _separate_frontmater {
         $body = $raw_header;
     } else {
         eval {
-            $meta = YAML::Tiny::Load($raw_header);
+            $meta = YAML::PP::Load($raw_header);
         };
         if ($@) {
             if ($strict_frontmatter) {
