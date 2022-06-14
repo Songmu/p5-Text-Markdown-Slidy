@@ -5,7 +5,7 @@ use warnings;
 
 use YAML::PP ();
 
-our $VERSION = "0.02";
+our $VERSION = "0.03";
 use parent 'Exporter';
 
 our @EXPORT = qw/markdown split_markdown/;
