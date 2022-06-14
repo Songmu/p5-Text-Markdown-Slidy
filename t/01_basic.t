@@ -114,12 +114,12 @@ done_testing;
 __DATA__
 - name: plain
   input: |
-    
+
     Title1
     ======
     abcde
     fg
-    
+
     Title2
     ------
     hoge
@@ -127,14 +127,14 @@ __DATA__
   expect: |
     <div class="slide">
     <h1>Title1</h1>
-    
+
     <p>abcde
     fg</p>
     </div>
-    
+
     <div class="slide">
     <h2>Title2</h2>
-    
+
     <p>hoge</p>
     </div>
 - name: loose frontmatter
@@ -142,42 +142,86 @@ __DATA__
     hoge: fuga
     ---
     # Title
-    
+
     Title2
     ---
-    
+
     hoge
   expect: |
     <div class="slide">
     <h1>Title</h1>
     </div>
-    
+
     <div class="slide">
     <h2>Title2</h2>
-    
+
     <p>hoge</p>
     </div>
   meta:
     hoge: fuga
 - name: strict frontmatter
-  input: |+
+  input: |
     ---
     hoge: fuga
     ---
     # Title
-    
+
     Title2
     ---
-    
+
     hoge
   expect: |
     <div class="slide">
     <h1>Title</h1>
     </div>
-    
+
     <div class="slide">
     <h2>Title2</h2>
-    
+
+    <p>hoge</p>
+    </div>
+  meta:
+    hoge: fuga
+- name: hr as slide delimiter
+  input: |
+    ---
+    hoge: fuga
+    ---
+    # Title
+
+    Title2
+    ---
+
+    Contents
+    - - -
+    aiueo
+
+    ---
+    new slide
+
+    hoge
+  expect: |
+    <div class="slide">
+    <h1>Title</h1>
+    </div>
+
+    <div class="slide">
+    <h2>Title2</h2>
+
+    <p>Contents</p>
+
+    <hr />
+    </div>
+
+    <div class="slide">
+    <p>aiueo</p>
+
+    <hr />
+    </div>
+
+    <div class="slide">
+    <p>new slide</p>
+
     <p>hoge</p>
     </div>
   meta:
