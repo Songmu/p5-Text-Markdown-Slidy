@@ -109,12 +109,11 @@ sub split_markdown {
                 push @slides, join("\n", (@slide_lines, $line));
                 @slide_lines = ();
                 next;
-            } else {
-                # h1 or h2
-                my $prev = pop @slide_lines;
-                push @slides, join("\n", @slide_lines) if @slide_lines;
-                @slide_lines = ($prev); # $prev is title;
             }
+            # h1 or h2
+            my $prev = pop @slide_lines;
+            push @slides, join("\n", @slide_lines) if @slide_lines;
+            @slide_lines = ($prev); # $prev is title;
         }
         push @slide_lines, $line;
     }
