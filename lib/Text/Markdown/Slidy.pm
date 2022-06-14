@@ -61,10 +61,11 @@ sub _separate_frontmater {
         eval {
             $meta = YAML::PP::Load($raw_header);
         };
-        if ($@) {
+        if ($@ || !$meta || ref $meta ne 'HASH') {
             if ($strict_frontmatter) {
                 die sprintf("invalid frontmatter\n%s", $raw_header);
             }
+            undef $meta;
             $body = $raw_header . $delim . $body;
         }
     }
@@ -101,7 +102,7 @@ sub split_markdown {
     my @slides;
     my @slide_lines;
     for my $line (split /\r?\n/, $text) {
-        if ( my ($delim) = $line =~ /^\s*([- ]+?|=+)\s*$/ and @slide_lines) {
+        if ( my ($delim) = $line =~ /^([- ]+?|=+)\s*$/ and @slide_lines) {
             if ($delim =~ / / || !$slide_lines[$#slide_lines]) {
                 # <hr />
                 # `- - -`

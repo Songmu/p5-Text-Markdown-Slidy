@@ -5,87 +5,6 @@ use Test::More 0.98;
 use Text::Markdown::Slidy;
 use YAML::PP ();
 
-my @cases = ({
-    name  => 'plain',
-    input => q{
-Title1
-======
-abcde
-fg
-
-Title2
-------
-hoge
-
-},
-    expect => q{<div class="slide">
-<h1>Title1</h1>
-
-<p>abcde
-fg</p>
-</div>
-
-<div class="slide">
-<h2>Title2</h2>
-
-<p>hoge</p>
-</div>
-}}, {
-    name => 'loose frontmatter',
-    input => q{hoge: fuga
----
-# Title
-
-Title2
----
-
-hoge},
-    expect => q{<div class="slide">
-<h1>Title</h1>
-</div>
-
-<div class="slide">
-<h2>Title2</h2>
-
-<p>hoge</p>
-</div>
-},
-    meta => {hoge => 'fuga'},
-}, {
-    name => 'strict frontmatter',
-    input => q{---
-hoge: fuga
----
-# Title
-
-Title2
----
-
-hoge},
-    expect => qq{<div class="slide">
-<h1>Title</h1>
-</div>
-
-<div class="slide">
-<h2>Title2</h2>
-
-<p>hoge</p>
-</div>
-},
-    expect => q{<div class="slide">
-<h1>Title</h1>
-</div>
-
-<div class="slide">
-<h2>Title2</h2>
-
-<p>hoge</p>
-</div>
-},
-    meta => {hoge => 'fuga'},
-},
-);
-
 my $tc_raw = do {
     local $/;
     <DATA>
@@ -121,8 +40,17 @@ __DATA__
     fg
 
     Title2
-    ------
+    ---
     hoge
+
+    Title3
+    ---
+
+    Title4
+    ----
+
+    Title5
+    ---  
 
   expect: |
     <div class="slide">
@@ -136,6 +64,18 @@ __DATA__
     <h2>Title2</h2>
 
     <p>hoge</p>
+    </div>
+
+    <div class="slide">
+    <h2>Title3</h2>
+    </div>
+
+    <div class="slide">
+    <h2>Title4</h2>
+    </div>
+
+    <div class="slide">
+    <h2>Title5</h2>
     </div>
 - name: loose frontmatter
   input: |
