@@ -31,6 +31,13 @@ for my $tc (@$test_cases) {
 done_testing;
 
 __DATA__
+- name: minimum
+  input: |
+    # Title
+  expect: |
+    <div class="slide">
+    <h1>Title</h1>
+    </div>
 - name: plain
   input: |
 
