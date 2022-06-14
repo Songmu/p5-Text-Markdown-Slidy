@@ -106,8 +106,9 @@ sub split_markdown {
                 # <hr />
                 # `- - -`
                 # "\n\n----\n"
-                push @slides, join("\n", @slide_lines) if @slide_lines;
+                push @slides, join("\n", (@slide_lines, $line));
                 @slide_lines = ();
+                next;
             } else {
                 # h1 or h2
                 my $prev = pop @slide_lines;
@@ -115,7 +116,7 @@ sub split_markdown {
                 @slide_lines = ($prev); # $prev is title;
             }
         }
-        push @slide_lines, $line; # should hr be pushed?
+        push @slide_lines, $line;
     }
     push @slides, join("\n", @slide_lines) if @slide_lines;
 
