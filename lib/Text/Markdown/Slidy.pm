@@ -100,15 +100,22 @@ sub split_markdown {
 
     my @slides;
     my @slide_lines;
-    my $prev;
     for my $line (split /\r?\n/, $text) {
-        if ( $line =~ /^(?:(?:-+)|(?:=+))$/ && $prev) {
-            pop @slide_lines;
-            push @slides, join("\n", @slide_lines) if @slide_lines;
-            @slide_lines = ($prev); # $prev is title;
+        if ( my ($delim) = $line =~ /^\s*([- ]+?|=+)\s*$/ and @slide_lines) {
+            if ($delim =~ / / || !$slide_lines[$#slide_lines]) {
+                # <hr />
+                # `- - -`
+                # "\n\n----\n"
+                push @slides, join("\n", @slide_lines) if @slide_lines;
+                @slide_lines = ();
+            } else {
+                # h1 or h2
+                my $prev = pop @slide_lines;
+                push @slides, join("\n", @slide_lines) if @slide_lines;
+                @slide_lines = ($prev); # $prev is title;
+            }
         }
-        push @slide_lines, $line;
-        $prev = $line;
+        push @slide_lines, $line; # should hr be pushed?
     }
     push @slides, join("\n", @slide_lines) if @slide_lines;
 
